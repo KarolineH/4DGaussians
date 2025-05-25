@@ -8,12 +8,11 @@
 #
 # For inquiries contact  george.drettakis@inria.fr
 #
-import imageio
+
 import numpy as np
 import torch
 from scene import Scene
 import os
-import cv2
 from tqdm import tqdm
 from os import makedirs
 from gaussian_renderer import render
@@ -23,7 +22,6 @@ from argparse import ArgumentParser
 from arguments import ModelParams, PipelineParams, get_combined_args, ModelHiddenParams
 from gaussian_renderer import GaussianModel
 from time import time
-import threading
 import concurrent.futures
 def multithread_write(image_list, path):
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=None)
@@ -45,13 +43,17 @@ def multithread_write(image_list, path):
 to8b = lambda x : (255*np.clip(x.cpu().numpy(),0,1)).astype(np.uint8)
 def render_set(model_path, name, iteration, views, gaussians, pipeline, background, cam_type):
     render_path = os.path.join(model_path, name, "ours_{}".format(iteration), "renders")
+    depth_path = os.path.join(model_path, name, "ours_{}".format(iteration), "depth_renders")
     gts_path = os.path.join(model_path, name, "ours_{}".format(iteration), "gt")
 
     makedirs(render_path, exist_ok=True)
     makedirs(gts_path, exist_ok=True)
+    makedirs(depth_path, exist_ok=True)
     render_images = []
+    render_depths = []
     gt_list = []
     render_list = []
+    depth_list = []
     print("point nums:",gaussians._xyz.shape[0])
     for idx, view in enumerate(tqdm(views, desc="Rendering progress")):
         if idx == 0:time1 = time()
@@ -59,10 +61,10 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
         render_output = render(view, gaussians, pipeline, background,cam_type=cam_type)
         rendering = render_output['render'] # colour image rendering
         depth = render_output['depth'] # depth image rendering
-        # TODO: save depth renders
-        # TODO: Locate the corresponding ground truth depth images
         render_images.append(to8b(rendering).transpose(1,2,0))
+        render_depths.append(to8b(depth).transpose(1,2,0))
         render_list.append(rendering)
+        depth_list.append(depth)
         if name in ["train", "test"]:
             if cam_type != "PanopticSports":
                 gt = view.original_image[0:3, :, :]
@@ -71,14 +73,16 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
             gt_list.append(gt)
 
     time2=time()
-    print("FPS:",(len(views)-1)/(time2-time1))
+    print("FPS (with depth rendering): ",(len(views)-1)/(time2-time1))
 
     multithread_write(gt_list, gts_path)
 
     multithread_write(render_list, render_path)
 
-    
-    imageio.mimwrite(os.path.join(model_path, name, "ours_{}".format(iteration), 'video_rgb.mp4'), render_images, fps=30)
+    multithread_write(depth_list, depth_path)
+
+    # imageio.mimwrite(os.path.join(model_path, name, "ours_{}".format(iteration), 'video_rgb.mp4'), render_images, fps=30)
+
 def render_sets(dataset : ModelParams, hyperparam, iteration : int, pipeline : PipelineParams, skip_train : bool, skip_test : bool, skip_video: bool):
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree, hyperparam)
