@@ -1,4 +1,4 @@
-exp_name1="mine_02"
+exp_name1="mine_04"
 
 python train.py -s /workspace/synthetic_data/ani_growth/ --port 6017 --expname "$exp_name1/ani_growth" --configs arguments/my_synthetic_data/my_synthetic_data.py
 wait
@@ -21,6 +21,8 @@ wait
 python train.py -s /workspace/synthetic_data/twisting/ --port 6017 --expname "$exp_name1/twisting" --configs arguments/my_synthetic_data/my_synthetic_data.py
 wait
 python train.py -s /workspace/synthetic_data/uni_growth/ --port 6017 --expname "$exp_name1/uni_growth" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+python train.py -s /workspace/synthetic_data/large_growth/ --port 6017 --expname "$exp_name1/large_growth" --configs arguments/my_synthetic_data/my_synthetic_data.py
 wait
 
 echo "Done"

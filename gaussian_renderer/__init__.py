@@ -53,7 +53,7 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     else:
         raster_settings = viewpoint_camera['camera']
         time=torch.tensor(viewpoint_camera['time']).to(means3D.device).repeat(means3D.shape[0],1)
-        raster_settings = raster_settings._replace(bg=bg_color) # override background color
+        # raster_settings = raster_settings._replace(bg=bg_color) # override background color
 
     rasterizer = GaussianRasterizer(raster_settings=raster_settings)
 

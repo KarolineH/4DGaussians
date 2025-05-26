@@ -5,7 +5,7 @@ OptimizationParams = dict(
     deformation_lr_delay_mult = 0.01,
     grid_lr_init = 0.0016,
     grid_lr_final = 0.000016,
-    iterations = 20000,
+    iterations = 30000,
     pruning_interval = 8000,
     percent_dense = 0.01,
     render_process=False,
@@ -17,7 +17,7 @@ ModelHiddenParams = dict(
      'grid_dimensions': 2,
      'input_coordinate_dim': 4,
      'output_coordinate_dim': 32,
-     'resolution': [64, 64, 64, 100]
+     'resolution': [64, 64, 64, 75]
     },
     multires = [1,2],
     defor_depth = 0,
