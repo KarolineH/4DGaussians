@@ -49,8 +49,8 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
     makedirs(render_path, exist_ok=True)
     makedirs(gts_path, exist_ok=True)
     makedirs(depth_path, exist_ok=True)
-    render_images = []
-    render_depths = []
+    # render_images = []
+    # render_depths = []
     gt_list = []
     render_list = []
     depth_list = []
@@ -60,11 +60,14 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
     
         render_output = render(view, gaussians, pipeline, background,cam_type=cam_type)
         rendering = render_output['render'] # colour image rendering
-        depth = render_output['depth'] # depth image rendering
-        render_images.append(to8b(rendering).transpose(1,2,0))
-        render_depths.append(to8b(depth).transpose(1,2,0))
+        inv_depth = render_output['depth'] # depth image rendering (comes out as inverse depth)
+        depth = (torch.max(inv_depth) - inv_depth) / torch.max(inv_depth) # convert to depth image
+        
+        # render_images.append(to8b(rendering).transpose(1,2,0))
+        # render_depths.append(to8b(depth).transpose(1,2,0))
         render_list.append(rendering)
         depth_list.append(depth)
+
         if name in ["train", "test"]:
             if cam_type != "PanopticSports":
                 gt = view.original_image[0:3, :, :]

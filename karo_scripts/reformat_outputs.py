@@ -1,34 +1,54 @@
 import os
 import cv2
 
-experiments_dir = "/workspace/4DGaussians/output/mine/"
-output_template = "video_{}.mp4"
-frame_rate = 24 # fps
-h = 800
-w = 800
 
-for folder in os.listdir(experiments_dir):
-    folder_path = os.path.join(experiments_dir, folder)
-    if not os.path.isdir(folder_path):
-        continue
-    test_render_dir = os.path.join(folder_path, "test/ours_20000/renders")
-    if not os.path.exists(test_render_dir):
-        continue
+def test_renders_to_mp4(exp_dir, out_dir_name=None):
+    '''
+    Goes over all trained models in the experiment directory and converts the renders
+    to mp4 videos.
+    Assumes 4 test views per model and that images are interleaved.
+    '''
 
-    images = sorted([f for f in os.listdir(test_render_dir) if f.endswith(".png")])
+    if out_dir_name is None:
+        out_dir_name = 'colour_videos'
 
+    output_template = "view_{}.mp4"
+    frame_rate = 24 # fps
+    h = 800
+    w = 800
 
-    # Create video writers
-    writers = [
-        cv2.VideoWriter(os.path.join(test_render_dir,output_template.format(i)), cv2.VideoWriter_fourcc(*'mp4v'), frame_rate, (w, h))
-        for i in range(4)
-    ]
+    for sequence in os.listdir(exp_dir):
+        folder_path = os.path.join(exp_dir, sequence)
+        if not os.path.isdir(folder_path):
+            continue
+        models = os.listdir(os.path.join(folder_path, "test"))
+        for model in models:
+            render_dir = os.path.join(folder_path, "test", model, "renders")
+            if not os.path.exists(render_dir):
+                continue
 
-    # Write frames to appropriate video
-    for i, img_name in enumerate(images):
-        frame = cv2.imread(os.path.join(test_render_dir, img_name))
-        writers[i % 4].write(frame)
+            if not os.path.isdir(os.path.join(folder_path, "test", model,out_dir_name)):
+                os.makedirs(os.path.join(folder_path, "test", model, out_dir_name))
 
-    # Release writers
-    for writer in writers:
-        writer.release()
+            images = sorted([f for f in os.listdir(render_dir) if f.endswith(".png")])
+
+            # Create video writers
+            # One for each of the four test views, because images are interleaved
+            writers = [
+                cv2.VideoWriter(os.path.join(folder_path, "test", model,out_dir_name,output_template.format(i)), cv2.VideoWriter_fourcc(*'mp4v'), frame_rate, (w, h))
+                for i in range(4)
+            ]
+
+            # Write frames to appropriate video
+            for j, img_name in enumerate(images):
+                frame = cv2.imread(os.path.join(render_dir, img_name))
+                writers[j % 4].write(frame)
+
+            # Release writers
+            for writer in writers:
+                writer.release()
+
+if __name__ == "__main__":
+    exp_dir = "/workspace/4DGaussians/output/mine_04/"
+    test_renders_to_mp4(exp_dir)
+    
