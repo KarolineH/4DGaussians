@@ -60,13 +60,17 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
     
         render_output = render(view, gaussians, pipeline, background,cam_type=cam_type)
         rendering = render_output['render'] # colour image rendering
-        inv_depth = render_output['depth'] # depth image rendering (comes out as inverse depth)
-        depth = (torch.max(inv_depth) - inv_depth) / torch.max(inv_depth) # convert to depth image
+        depth = render_output['depth'] # depth image rendering (comes out as inverse depth)
+        max_valid_depth = torch.unique(depth)[-2] # This should be the maximum reading that is not 15.0, which is the predefined far max value
+        min_depth = torch.min(depth)
+        norm = torch.clip(depth, min_depth, max_valid_depth)
+        norm = (norm - min_depth) / (max_valid_depth - min_depth)
+        # depth = (torch.max(inv_depth) - inv_depth) / torch.max(inv_depth) # convert to depth image
         
         # render_images.append(to8b(rendering).transpose(1,2,0))
         # render_depths.append(to8b(depth).transpose(1,2,0))
         render_list.append(rendering)
-        depth_list.append(depth)
+        depth_list.append(norm)
 
         if name in ["train", "test"]:
             if cam_type != "PanopticSports":
