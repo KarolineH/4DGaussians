@@ -63,8 +63,8 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
         depth = render_output['depth'] # depth image rendering (comes out as inverse depth)
         max_valid_depth = torch.unique(depth)[-2] # This should be the maximum reading that is not 15.0, which is the predefined far max value
         min_depth = torch.min(depth)
-        norm = torch.clip(depth, min_depth, max_valid_depth)
-        norm = (norm - min_depth) / (max_valid_depth - min_depth)
+        norm = ((depth - min_depth) / (max_valid_depth - min_depth)) * 0.8
+        norm = torch.clip(norm, 0, 1)
         # depth = (torch.max(inv_depth) - inv_depth) / torch.max(inv_depth) # convert to depth image
         
         # render_images.append(to8b(rendering).transpose(1,2,0))
