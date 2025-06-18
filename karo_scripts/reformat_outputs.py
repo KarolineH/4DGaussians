@@ -49,6 +49,6 @@ def test_renders_to_mp4(exp_dir, out_dir_name=None):
                 writer.release()
 
 if __name__ == "__main__":
-    exp_dir = "/workspace/4DGaussians/output/mine_04/"
+    exp_dir = "/workspace/4DGaussians/output/mine_05/"
     test_renders_to_mp4(exp_dir)
     

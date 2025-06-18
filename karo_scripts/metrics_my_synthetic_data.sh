@@ -22,5 +22,6 @@ python metrics.py --model_path "/workspace/4DGaussians/output/${expname}/twistin
 wait
 python metrics.py --model_path "/workspace/4DGaussians/output/${expname}/uni_growth/" 
 wait
+python metrics.py --model_path "/workspace/4DGaussians/output/${expname}/large_growth/" 
 
 echo "Done"
