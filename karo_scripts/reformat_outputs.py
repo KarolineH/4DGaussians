@@ -45,20 +45,34 @@ def test_renders_to_mp4(exp_dir, out_dir_name=None):
                 writers[j % 4].write(frame)
 
             # Release writers
-            import subprocess
+            # import subprocess
             for i,writer in enumerate(writers):
                 writer.release()
-                outfile = os.path.join(folder_path, "test", model,out_dir_name,output_template.format(i))
-                # Fix the encoding of the video using ffmpeg
-                cmd = ['ffmpeg','-i', outfile,'-vcodec', 'libx264','-acodec', 'aac','-movflags', '+faststart',outfile,'-y']
-                try:
-                    subprocess.run(cmd, check=True)
-                    print(f"✔ Converted: {outfile}")
-                except subprocess.CalledProcessError as e:
-                    print(f"❌ ffmpeg failed on {outfile}:", e)
-                return
+                fix_video_codec(os.path.join(folder_path, "test", model,out_dir_name,output_template.format(i)))
+
+
+def fix_video_codec(outpath):
+    import subprocess
+    temp_path = outpath + '.tmp.mp4'
+    cmd = [
+        'ffmpeg', '-i', outpath,
+        '-vcodec', 'libx264',
+        '-acodec', 'aac',
+        '-movflags', '+faststart',
+        temp_path,
+        '-y'
+    ]
+    try:
+        subprocess.run(cmd, check=True)
+        os.replace(temp_path, outpath)  # atomically overwrite original
+        print(f"✔ Converted: {outpath}")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ ffmpeg failed on {outpath}:", e)
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+    return
 
 if __name__ == "__main__":
-    exp_dir = "/workspace/4DGaussians/output/mine_05/"
+    exp_dir = "/workspace/4DGaussians/output/mine_07/"
     test_renders_to_mp4(exp_dir)
     

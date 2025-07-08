@@ -1,4 +1,4 @@
-expname="mine_05"
+expname="mine_07"
 iter="20000"
 
 python render_full.py --model_path "/workspace/4DGaussians/output/${expname}/ani_growth/" --skip_train --skip_video --iteration $iter --configs "/workspace/4DGaussians/arguments/my_synthetic_data/my_synthetic_data.py"

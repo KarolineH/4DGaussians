@@ -1,4 +1,4 @@
-expname="mine_05"
+expname="mine_07"
 
 python metrics.py --model_path "/workspace/4DGaussians/output/${expname}/ani_growth/"
 wait

@@ -1,4 +1,4 @@
-exp_name1="mine_05"
+exp_name1="mine_07"
 
 python train.py -s /workspace/synthetic_data/ani_growth/ --port 6017 --expname "$exp_name1/ani_growth" --configs arguments/my_synthetic_data/my_synthetic_data.py
 wait
