@@ -24,5 +24,12 @@ python train.py -s /workspace/synthetic_data/uni_growth/ --port 6017 --expname "
 wait
 python train.py -s /workspace/synthetic_data/large_growth/ --port 6017 --expname "$exp_name1/large_growth" --configs arguments/my_synthetic_data/my_synthetic_data.py
 wait
+python train.py -s /workspace/synthetic_data/uni_shrink/ --port 6017 --expname "$exp_name1/uni_shrink" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+python train.py -s /workspace/synthetic_data/large_shrink/ --port 6017 --expname "$exp_name1/large_shrink" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+python train.py -s /workspace/synthetic_data/emergence/ --port 6017 --expname "$exp_name1/emergence" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+
 
 echo "Done"

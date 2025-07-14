@@ -24,6 +24,13 @@ python train.py -s /workspace/synthetic_data/uni_growth/ --port 6017 --expname "
 wait
 python train.py -s /workspace/synthetic_data/large_growth/ --port 6017 --expname "$exp_name/large_growth" --configs arguments/my_synthetic_data/my_synthetic_data.py
 wait
+python train.py -s /workspace/synthetic_data/uni_shrink/ --port 6017 --expname "$exp_name1/uni_shrink" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+python train.py -s /workspace/synthetic_data/large_shrink/ --port 6017 --expname "$exp_name1/large_shrink" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+python train.py -s /workspace/synthetic_data/emergence/ --port 6017 --expname "$exp_name1/emergence" --configs arguments/my_synthetic_data/my_synthetic_data.py
+wait
+
 
 iter="20000"
 
@@ -51,6 +58,12 @@ python render_full.py --model_path "/workspace/4DGaussians/output/${exp_name}/un
 wait
 python render_full.py --model_path "/workspace/4DGaussians/output/${exp_name}/large_growth/" --skip_train --skip_video --iteration $iter --configs "/workspace/4DGaussians/arguments/my_synthetic_data/my_synthetic_data.py"
 wait
+python render_full.py --model_path "/workspace/4DGaussians/output/${exp_name}/uni_shrink/" --skip_train --skip_video --iteration $iter --configs "/workspace/4DGaussians/arguments/my_synthetic_data/my_synthetic_data.py"
+wait
+python render_full.py --model_path "/workspace/4DGaussians/output/${exp_name}/large_shrink/" --skip_train --skip_video --iteration $iter --configs "/workspace/4DGaussians/arguments/my_synthetic_data/my_synthetic_data.py"
+wait
+python render_full.py --model_path "/workspace/4DGaussians/output/${exp_name}/emergence/" --skip_train --skip_video --iteration $iter --configs "/workspace/4DGaussians/arguments/my_synthetic_data/my_synthetic_data.py"
+wait
 
 echo "Rendering test results completed"
 
@@ -77,5 +90,11 @@ wait
 python metrics.py --model_path "/workspace/4DGaussians/output/${exp_name}/uni_growth/" 
 wait
 python metrics.py --model_path "/workspace/4DGaussians/output/${exp_name}/large_growth/" 
+wait
+python metrics.py --model_path "/workspace/4DGaussians/output/${exp_name}/uni_shrink/" 
+wait
+python metrics.py --model_path "/workspace/4DGaussians/output/${exp_name}/large_shrink/" 
+wait
+python metrics.py --model_path "/workspace/4DGaussians/output/${exp_name}/emergence/" 
 
 echo "Metrics computed"
