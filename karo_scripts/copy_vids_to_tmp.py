@@ -6,8 +6,8 @@ Fetches the videos for test view 1 (camera id 9?) from the Dynamic3DGaussians ex
 and copies them to a temporary directory. 
 '''
 
-model_dir = '/workspace/4DGaussians/output' 
-exp_name = 'mine_05'
+model_dir = '/workspace/data/4dgs' 
+exp_name = 'mine_07'
 tmp_dir = '/workspace/tmp'
 exp_dir = os.path.join(model_dir, exp_name)
 for sequence in os.listdir(exp_dir):

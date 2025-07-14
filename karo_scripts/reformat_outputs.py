@@ -73,6 +73,6 @@ def fix_video_codec(outpath):
     return
 
 if __name__ == "__main__":
-    exp_dir = "/workspace/4DGaussians/output/mine_07/"
+    exp_dir = "/workspace/data/4dgs/mine_07/"
     test_renders_to_mp4(exp_dir)
     
